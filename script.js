@@ -13,11 +13,13 @@ const booksTotal = document.querySelector('#books-total')
 
 
 
-function Book(title, author, pages, read) {
-    this.title = title
-    this.author = author 
-    this.pages = pages 
-    this.read = read 
+class Book {
+    constructor(title, author, pages, read) {
+        this.title = title
+        this.author = author 
+        this.pages = pages 
+        this.read = read 
+    }
 }
 
 function addBookToLibrary(book) {
@@ -115,6 +117,7 @@ addButton.addEventListener('click', (e) => {
     let form = document.createElement('form')
     form.setAttribute('method', '#')
     form.setAttribute('action', 'post')
+    form.setAttribute('novalidate', 'true')
     page.appendChild(form)
 
     let heading = document.createElement('h2')
@@ -136,11 +139,22 @@ addButton.addEventListener('click', (e) => {
         input.setAttribute('name', element)
         if (inputType !== 'checkbox') {
             input.setAttribute('required', 'required')
+            input.classList.add('required')
         } else {
             input.addEventListener('click', (e) => {
                 read = !read
             })
         }
+        input.addEventListener('input', (e) => {
+            if (input.validity.valueMissing) {
+                input.reportValidity();
+                input.setCustomValidity('No blank fields!')
+            } else {
+                input.validity.customError = false 
+                input.setCustomValidity('')
+                input.reportValidity()
+            }
+        })
         form.appendChild(input)
     }
 
@@ -166,7 +180,36 @@ addButton.addEventListener('click', (e) => {
 
     form.addEventListener('submit', (e) => e.preventDefault())
 
+    form.addEventListener('submit', (e) => {
+        const requiredInputs = document.querySelectorAll('.required')
+        requiredInputs.forEach((input) => {
+            if (input.validity.valueMissing) {
+                input.setCustomValidity('No blank fields!')
+                input.reportValidity()
+            }
+        })
 
+        if ([...requiredInputs].every((input) => !input.validity.valueMissing)) {
+            requiredInputs.forEach((input) => {
+                input.setCustomValidity('')
+                input.reportValidity()
+            })
+            let title = document.querySelector('#title')
+            let author = document.querySelector('#author')
+            let pages = document.querySelector('#pages')
+            read ? booksReadNum++ : booksUnreadNum++
+
+            updateStatistics() 
+            
+            let newBook = new Book(title.value, author.value, pages.value, read) 
+            addBookToLibrary(newBook)
+
+            displayBookNew(myLibrary)
+
+            page.removeChild(form)
+        }
+    })
+/*
     form.addEventListener('submit', (e) => {
         let title = document.querySelector('#title')
         let author = document.querySelector('#author')
@@ -182,7 +225,7 @@ addButton.addEventListener('click', (e) => {
 
         page.removeChild(form)
     })
-
+*/
 
 })
 
