@@ -1,6 +1,8 @@
 
 First exercise in an "almost-CRUD". This library app allows users to create, read, update (to some extent) and delete references to books. This was my first project that involved manipulations of objects.
 
+Live site: https://joeysantia.github.io/Library/
+
 NOTE: due to Git errors, previous versions of this project were lost. This version was originally uploaded on March 13th.
 
 FURTHER CHANGES
